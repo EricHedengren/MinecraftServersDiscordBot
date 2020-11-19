@@ -2,8 +2,6 @@ import discord
 import asyncio
 import mcstatus
 
-#this is a new line
-
 # take all possible code out of try/except statements
 
 # config file
