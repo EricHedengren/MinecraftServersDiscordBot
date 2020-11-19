@@ -28,14 +28,17 @@ def build_embed():
 
 class MyClient(discord.Client):
     async def on_ready(self):
+        print('bot is online')
         channel = client.get_channel(channel_id)
 
         while True:
             try:
                 server.ping()
+                print('server is online')
                 server_status = True
                 server_embed = build_embed()
                 status_message = await channel.send(server_message, embed=server_embed)
+                print('sent message')
 
                 while server_status:
                     await asyncio.sleep(60)
@@ -43,6 +46,7 @@ class MyClient(discord.Client):
                         server.ping()
                         server_embed = build_embed()
                         await status_message.edit(content=server_message, embed=server_embed)
+                        print('edited message')
 
                     except:
                         server_embed = discord.Embed(title="Server is Offline", description='Check back later', color=0xFF0000)
@@ -50,13 +54,16 @@ class MyClient(discord.Client):
                         server_status = False
 
             except:
+                print('something failed/server is offline')
                 await asyncio.sleep(300)
 
-server_address = 'xps.apmonitor.com'
+print('starting...')
+
+server_address = '10.0.0.50'
 channel_id = 778428916616003647
 role_id = 778483486793269289
 
-server_message = '<@&{}> server is now active'.format(role_id)
+server_message = '<@&{}> the server is online!'.format(role_id)
 
 server = mcstatus.MinecraftServer.lookup(server_address)
 
