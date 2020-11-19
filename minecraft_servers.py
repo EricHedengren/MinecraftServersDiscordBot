@@ -4,6 +4,8 @@ import mcstatus
 
 # take all possible code out of try/except statements
 
+# okay try this again...
+
 # config file
 # channel to send messages (they are unique!)
 # server address
