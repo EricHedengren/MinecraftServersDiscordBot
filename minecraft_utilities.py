@@ -84,10 +84,14 @@ async def on_ready():
 
 
 @client.command()
+async def echo(ctx, arg):
+    await ctx.send(arg)
+
+@client.command()
 async def update(ctx):
     await ctx.send('Bot is updating...')
-    #subprocess.run(r'/home/linaro/Discord/update.sh')
-    #sys.exit()
+    subprocess.run(r'/home/linaro/Discord/update.sh')
+    sys.exit()
 
 
 client.run('Nzc4NDI2NTEyMjY4NTkxMTE3.X7R0Lg.ogul_Yi1PDKVoNp4hezHdsJe9SI')
