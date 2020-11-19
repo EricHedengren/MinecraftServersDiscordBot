@@ -12,7 +12,7 @@ class MyClient(discord.Client):
                 used_slots, total_slots = get_server_data()
                 status_message = await channel.send(server_online_message.format(used_slots,total_slots))
                 while server_online_status:
-                    await asyncio.sleep(300)
+                    await asyncio.sleep(60)
                     try:
                         server.ping()
                         used_slots, total_slots = get_server_data()
@@ -23,7 +23,7 @@ class MyClient(discord.Client):
                         server_online_status = False
 
             except:
-                await asyncio.sleep(600)
+                await asyncio.sleep(300)
 
 def get_server_data():
     server_data = server.status().raw
