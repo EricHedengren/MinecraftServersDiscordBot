@@ -52,6 +52,7 @@ client = commands.Bot(command_prefix=command_prefix)
 
 @client.event
 async def on_ready():
+    print('bot is ready')
     channel = client.get_channel(channel_id)
 
     while True:
@@ -85,7 +86,7 @@ async def on_ready():
 @client.command()
 async def update(ctx):
     await ctx.send('Bot is updating...')
-    #subprocess.run(r'C:path to shell')
+    #subprocess.run(r'/home/linaro/Discord/update.sh')
     #sys.exit()
 
 
