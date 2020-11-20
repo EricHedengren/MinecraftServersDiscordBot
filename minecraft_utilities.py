@@ -83,7 +83,7 @@ async def ping(ctx):
 @client.command()
 async def update(ctx):
     await ctx.send('Bot is updating...')
-    subprocess.run(r'/home/linaro/Discord/update.sh')
+    subprocess.run(r'/home/linaro/Discord/start.sh')
     await ctx.send('Did we make it?')
     sys.exit()
 
