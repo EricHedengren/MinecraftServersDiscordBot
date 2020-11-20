@@ -24,6 +24,8 @@ def build_embed():
     return embed
 
 
+print('1.0')
+
 # config
 command_prefix = '!'
 server_address = '10.0.0.50'
