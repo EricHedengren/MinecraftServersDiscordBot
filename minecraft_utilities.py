@@ -77,7 +77,7 @@ async def echo(ctx, arg):
 
 @client.command()
 async def ping(ctx):
-    await ctx.send('current time: '+str(time.time()))
+    await ctx.send('current time:      '+str(time.time()))
 
 @client.command()
 async def update(ctx):
