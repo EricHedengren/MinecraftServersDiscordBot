@@ -24,7 +24,7 @@ def build_embed():
     return embed
 
 
-print('1.0')
+print('1.1')
 
 # config
 command_prefix = '!'
