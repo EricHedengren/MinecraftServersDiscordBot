@@ -78,7 +78,7 @@ async def echo(ctx, arg):
 
 @client.command()
 async def ping(ctx):
-    await ctx.send('not implemented yet')
+    await ctx.send(time.time())
 
 @client.command()
 async def update(ctx):
