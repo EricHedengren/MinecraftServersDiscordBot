@@ -1,6 +1,5 @@
 import asyncio
 import mcstatus
-import subprocess
 import sys
 import time
 import discord
@@ -78,13 +77,11 @@ async def echo(ctx, arg):
 
 @client.command()
 async def ping(ctx):
-    await ctx.send('current time:'+str(time.time()))
+    await ctx.send('current time: '+str(time.time()))
 
 @client.command()
 async def update(ctx):
     await ctx.send('Bot is updating...')
-    subprocess.run(r'/home/linaro/Discord/start.sh')
-    await ctx.send('Did we make it?')
     sys.exit()
 
 
