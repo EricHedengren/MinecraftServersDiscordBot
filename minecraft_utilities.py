@@ -24,8 +24,6 @@ def build_embed():
     return embed
 
 
-print('1.3')
-
 # config
 command_prefix = '!'
 server_address = '10.0.0.50'
@@ -79,7 +77,7 @@ async def echo(ctx, arg):
 
 @client.command()
 async def ping(ctx):
-    await ctx.send('current time:   this is obvious   '+str(time.time()))
+    await ctx.send('current time: '+str(time.time()))
 
 @client.command()
 async def update(ctx):
