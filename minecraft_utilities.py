@@ -91,6 +91,7 @@ async def echo(ctx, arg):
 async def update(ctx):
     await ctx.send('Bot is updating...')
     subprocess.run(r'/home/linaro/Discord/update.sh')
+    await ctx.send('Did we make it?')
     sys.exit()
 
 
