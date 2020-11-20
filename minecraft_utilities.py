@@ -1,21 +1,10 @@
-# take all possible code out of try/except statements
-
-# config file
-# channel to send messages (they are unique!)
-# server address
-# role to ping
-
-# remote update
-
-# combine command and server status functionality
-
-
-import discord
-from discord.ext import commands
 import asyncio
 import mcstatus
 import subprocess
 import sys
+import time
+import discord
+from discord.ext import commands
 
 
 def build_embed():
@@ -86,6 +75,10 @@ async def on_ready():
 @client.command()
 async def echo(ctx, arg):
     await ctx.send(arg)
+
+@client.command()
+async def ping(ctx):
+    await ctx.send(time.time())
 
 @client.command()
 async def update(ctx):
