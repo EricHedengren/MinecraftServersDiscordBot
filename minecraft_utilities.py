@@ -1,17 +1,16 @@
-import asyncio
-import mcstatus
 import sys
-import time
+import mcstatus
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 
-def build_embed():
+def build_embed(address):
+    server = mcstatus.MinecraftServer.lookup(address)
     server_data = server.status().raw
 
-    embed = discord.Embed(title="Server is Online", description=server_data['description']['text'], color=0x008000)
-    embed.add_field(name="Server Address", value=server_address, inline=False)
-    embed.add_field(name="Version", value=server_data['version']['name'], inline=False)
+    server_stats = discord.Embed(title="Server is Online", description=server_data['description']['text'], color=0x008000)
+    server_stats.add_field(name="Server Address", value=address, inline=False)
+    server_stats.add_field(name="Version", value=server_data['version']['name'], inline=False)
 
     players = []
 
@@ -19,70 +18,76 @@ def build_embed():
         players.append(server_data['players']['sample'][i]['name'])
 
     formatted_players = ', '.join(players)
-    embed.add_field(name="Players Online", value=formatted_players, inline=False)
+    server_stats.add_field(name="Players Online", value=formatted_players, inline=False)
 
-    return embed
+    return server_stats
 
 
-# config
 command_prefix = '!'
-server_address = '10.0.0.50'
+default_server_address = '10.0.0.50'
 channel_id = 778428916616003647
-role_id = 778483486793269289
+role_id = 778483486793269289 # optional
 
 
+status_message = None
 server_message = '<@&{}> the server is online!'.format(role_id)
-
-server = mcstatus.MinecraftServer.lookup(server_address)
-
-client = commands.Bot(command_prefix=command_prefix)
+default_server = mcstatus.MinecraftServer.lookup(default_server_address)
 
 
-@client.event
+bot = commands.Bot(command_prefix=command_prefix)
+
+
+@bot.event
 async def on_ready():
     print('bot is ready')
-    channel = client.get_channel(channel_id)
-
-    while True:
-        try:
-            server.ping()
-            print('server is online')
-            server_online_status = True
-            server_embed = build_embed()
-            status_message = await channel.send(server_message, embed=server_embed)
-            print('sent message')
-
-            while server_online_status:
-                await asyncio.sleep(60)
-
-                try:
-                    server.ping()
-                    server_embed = build_embed()
-                    await status_message.edit(content=server_message, embed=server_embed)
-                    print('edited message')
-
-                except:
-                    server_embed = discord.Embed(title="Server is Offline", description='Check back later', color=0xFF0000)
-                    await status_message.edit(content='',emded=server_embed)
-                    server_online_status = False
-
-        except:
-            print('something failed/server is offline')
-            await asyncio.sleep(300)
+    default_server_status.start()
 
 
-@client.command()
+@tasks.loop(minutes=1)
+async def default_server_status(channel):
+    print('checking the server status...')
+
+    try:
+        default_server.ping()
+        server_online(status_message)
+
+    except:
+        server_offline(status_message)
+
+
+async def server_online(status_message):
+    print('server is online')
+    status_channel = bot.get_channel(channel_id)
+
+    if status_message != None:
+        await status_message.edit(content=server_message) #, embed=server_embed
+
+    elif status_message == None:
+        status_message = await status_channel.send(server_message) #, embed=server_embed
+        print('sent message')
+
+
+async def server_offline(status_message):
+    print('server is offline')
+    if status_message != None:
+        await status_message.delete()
+        status_message = None
+
+
+@bot.command()
+async def server_status(ctx, server_address):
+    await ctx.send(embed=build_embed(server_address))
+
+
+@bot.command()
 async def echo(ctx, arg):
     await ctx.send(arg)
 
-@client.command()
-async def ping(ctx):
-    await ctx.send('current time: '+str(time.time()))
 
-@client.command()
-async def update(ctx):
-    await ctx.send('Bot is updating...')
+@bot.command()
+async def update(ctx): # make available to only a specific user
+    await ctx.send('Updating... Please wait at least a minute for the bot to go online again.')
     sys.exit()
 
 
-client.run('Nzc4NDI2NTEyMjY4NTkxMTE3.X7R0Lg.ogul_Yi1PDKVoNp4hezHdsJe9SI')
+bot.run('Nzc4NDI2NTEyMjY4NTkxMTE3.X7R0Lg.ogul_Yi1PDKVoNp4hezHdsJe9SI')
