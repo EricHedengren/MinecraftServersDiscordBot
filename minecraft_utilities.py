@@ -47,8 +47,7 @@ async def on_ready():
 @tasks.loop(minutes=1)
 async def default_server_status():
     status_channel = bot.get_channel(channel_id)
-    print('checking the server status...')
-    print(status_message)
+    print('checking the server status:', end=' ')
 
     try:
         default_server.ping()
@@ -59,15 +58,15 @@ async def default_server_status():
 
 
 async def server_online(channel):
-    print('server is online')
     global status_message
 
     if status_message != None:
         print('server is still online')
-        await status_message.edit(content=ping_message)
+        await status_message.edit(content=ping_message) # only edit embed
         print('edited status message')
 
     elif status_message == None:
+        print('server is online')
         status_message = await channel.send(ping_message)
         print('status message sent')
 
@@ -75,14 +74,14 @@ async def server_online(channel):
 async def server_offline():
     global status_message
 
-    if status_message != None:
+    if status_message == None:
+        print('server is offline')
+
+    elif status_message != None:
         print('server went offline')
         await status_message.delete()
         print('status message deleted')
         status_message = None
-
-    elif status_message == None:
-        print('server is offline')
 
 
 @bot.command()
