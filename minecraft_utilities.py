@@ -95,7 +95,7 @@ async def server_offline():
         status_message = None
 
 
-@bot.command(help="Checks a Minecraft server's status; Enter a Minecraft IP address.")
+@bot.command(help="Checks a Minecraft server's status; Enter an IP address.")
 async def server_status(ctx, server_address):
     server_lookup = mcstatus.MinecraftServer.lookup(server_address)
 
