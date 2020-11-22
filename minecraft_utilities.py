@@ -95,8 +95,8 @@ async def server_offline():
         status_message = None
 
 
-@bot.command(help="Checks a Minecraft server's status; Enter an IP address.")
-async def server_status(ctx, server_address):
+@bot.command(aliases=['status','s'], help="Checks a Minecraft server's status with an IP address.")
+async def server(ctx, server_address):
     server_lookup = mcstatus.MinecraftServer.lookup(server_address)
 
     try:
@@ -107,18 +107,13 @@ async def server_status(ctx, server_address):
         await ctx.send('Looks like that server is offline. Try a different IP address or try again later.')
 
 
-@bot.command(help="Returns the bot's latency")
-async def ping(ctx):
-    await ctx.send('Ping: '+str(bot.latency))
-
-
-@bot.command(help='Mimics whatever you say')
-async def echo(ctx, *args):
-    await ctx.send(' '.join(args))
+@bot.command(aliases=['ping'], help="Returns the bot's latency")
+async def latency(ctx):
+    await ctx.send('Latency: '+str(bot.latency))
 
 
 @commands.is_owner()
-@bot.command(help="Updates the bot's code; Can only be used by the bot owner.")
+@bot.command(aliases=['reboot'], help="Updates the bot's code. Can only be used by the bot owner.")
 async def update(ctx):
     await ctx.send('Updating... Please wait a minute for the bot to go online again.')
     sys.exit()
