@@ -32,7 +32,7 @@ def server_embed(server, address):
 
 command_prefix = 'mu.' # config file
 default_server_address = 'xps.apmonitor.com'
-channel_id = 772220260589240363
+channel_id = 779926033489985537 #772220260589240363
 role_id = 759862142508990544 # optional
 
 
