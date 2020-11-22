@@ -5,29 +5,35 @@ import discord
 from discord.ext import commands, tasks
 
 
-def create_embed(address):
-    server = mcstatus.MinecraftServer.lookup(address)
+def server_embed(server, address):
     server_data = server.status().raw
+    number_online = server_data['players']['online']
+    online_max = server_data['players']['max']
 
-    server_stats = discord.Embed(title="Server is Online", description=server_data['description']['text'], color=0x008000)
-    server_stats.add_field(name="Server Address", value=address, inline=False)
-    server_stats.add_field(name="Version", value=server_data['version']['name'], inline=False)
 
-    players = []
+    server_stats = discord.Embed(title="Server is Online", description=server_data['description']['text'], color=discord.Color.green())
 
-    for i in range(len(server_data['players']['sample'])):
-        players.append(server_data['players']['sample'][i]['name'])
+    server_stats.add_field(name="Server Address", value=address)
+    server_stats.add_field(name="Version", value=server_data['version']['name'])
+    server_stats.add_field(name="Number of Players Online", value=str(number_online)+'/'+str(online_max))
 
-    formatted_players = ', '.join(players)
-    server_stats.add_field(name="Players Online", value=formatted_players, inline=False)
+    if number_online > 0:
+        players = []
+
+        for i in range(len(server_data['players']['sample'])):
+            players.append(server_data['players']['sample'][i]['name'])
+
+        formatted_players = ', '.join(players)
+
+        server_stats.add_field(name="Players Online", value=formatted_players, inline=False)
 
     return server_stats
 
 
-command_prefix = '!' # config file
-default_server_address = '10.0.0.50' # database
-channel_id = 778428916616003647 # database
-role_id = 778483486793269289 # database, optional
+command_prefix = 'mu.' # config file
+default_server_address = 'xps.apmonitor.com'
+channel_id = 772220260589240363
+role_id = 759862142508990544 # optional
 
 
 status_message = None
@@ -72,11 +78,11 @@ async def server_online(channel):
     global status_message
 
     if status_message != None:
-        await status_message.edit(content=ping_message) # only edit embed
+        await status_message.edit(embed=server_embed(default_server, default_server_address))
         print('edited status message')
 
     elif status_message == None:
-        status_message = await channel.send(ping_message)
+        status_message = await channel.send(ping_message, embed=server_embed(default_server, default_server_address))
         print('status message sent')
 
 
@@ -89,23 +95,31 @@ async def server_offline():
         status_message = None
 
 
-@bot.command()
+@bot.command(help="Checks a minecraft server's status")
 async def server_status(ctx, server_address):
-    await ctx.send(embed=create_embed(server_address))
+    server_lookup = mcstatus.MinecraftServer.lookup(server_address)
+
+    try:
+        server_lookup.ping()
+        await ctx.send(embed=server_embed(server_lookup, server_address))
+
+    except:
+        await ctx.send('Looks like that server is offline')
 
 
-@bot.command()
+@bot.command(help="Returns the bot's latency")
 async def ping(ctx):
-    print() # return bot latency
+    await ctx.send('Ping: '+str(bot.latency))
 
 
+@bot.command(help='Mimics whatever you send')
+async def echo(ctx, *args):
+    await ctx.send(' '.join(args))
+
+
+@commands.is_owner()
 @bot.command()
-async def echo(ctx, arg):
-    await ctx.send(arg)
-
-
-@bot.command()
-async def update(ctx): # make available to only a specific user
+async def update(ctx):
     await ctx.send('Updating... Please wait a minute for the bot to go online again.')
     sys.exit()
 
