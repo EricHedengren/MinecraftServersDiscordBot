@@ -49,7 +49,7 @@ bot = commands.Bot(command_prefix=command_prefix)
 @bot.event
 async def on_ready():
     print('bot is ready')
-    await default_server_status.start()
+    #await default_server_status.start()
 
 
 @tasks.loop(minutes=1)
