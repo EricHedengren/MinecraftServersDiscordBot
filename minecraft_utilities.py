@@ -31,6 +31,8 @@ role_id = 778483486793269289 # database, optional
 
 
 status_message = None
+current_server_status = None
+status_prefix = 'server status: '
 ping_message = '<@&{}> the server is online!'.format(role_id)
 default_server = mcstatus.MinecraftServer.lookup(default_server_address)
 
@@ -46,14 +48,23 @@ async def on_ready():
 
 @tasks.loop(minutes=1)
 async def default_server_status():
+    global current_server_status
     status_channel = bot.get_channel(channel_id)
-    print('checking the server status:', end=' ')
 
     try:
         default_server.ping()
+
+        if current_server_status != 'online':
+            current_server_status = 'online'
+            print(status_prefix + current_server_status)
+
         await server_online(status_channel)
 
     except:
+        if current_server_status != 'offline':
+            current_server_status = 'offline'
+            print(status_prefix + current_server_status)
+
         await server_offline()
 
 
@@ -61,12 +72,10 @@ async def server_online(channel):
     global status_message
 
     if status_message != None:
-        print('server is still online')
         await status_message.edit(content=ping_message) # only edit embed
         print('edited status message')
 
     elif status_message == None:
-        print('server is online')
         status_message = await channel.send(ping_message)
         print('status message sent')
 
@@ -74,11 +83,7 @@ async def server_online(channel):
 async def server_offline():
     global status_message
 
-    if status_message == None:
-        print('server is offline')
-
-    elif status_message != None:
-        print('server went offline')
+    if status_message != None:
         await status_message.delete()
         print('status message deleted')
         status_message = None
@@ -89,7 +94,7 @@ async def server_status(ctx, server_address):
     await ctx.send(embed=create_embed(server_address))
 
 
-@bot.command
+@bot.command()
 async def ping(ctx):
     print() # return bot latency
 
