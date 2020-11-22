@@ -7,9 +7,9 @@ from discord.ext import commands, tasks
 
 def server_embed(server, address):
     server_data = server.status().raw
+
     number_online = server_data['players']['online']
     online_max = server_data['players']['max']
-
 
     server_stats = discord.Embed(title="Server is Online", description=server_data['description']['text'], color=discord.Color.green())
 
@@ -95,7 +95,7 @@ async def server_offline():
         status_message = None
 
 
-@bot.command(help="Checks a minecraft server's status")
+@bot.command(help="Checks a Minecraft server's status; Enter a Minecraft IP address.")
 async def server_status(ctx, server_address):
     server_lookup = mcstatus.MinecraftServer.lookup(server_address)
 
@@ -104,7 +104,7 @@ async def server_status(ctx, server_address):
         await ctx.send(embed=server_embed(server_lookup, server_address))
 
     except:
-        await ctx.send('Looks like that server is offline')
+        await ctx.send('Looks like that server is offline. Try a different IP address or try again later.')
 
 
 @bot.command(help="Returns the bot's latency")
@@ -112,13 +112,13 @@ async def ping(ctx):
     await ctx.send('Ping: '+str(bot.latency))
 
 
-@bot.command(help='Mimics whatever you send')
+@bot.command(help='Mimics whatever you say')
 async def echo(ctx, *args):
     await ctx.send(' '.join(args))
 
 
 @commands.is_owner()
-@bot.command()
+@bot.command(help="Updates the bot's code; Can only be used by the bot owner.")
 async def update(ctx):
     await ctx.send('Updating... Please wait a minute for the bot to go online again.')
     sys.exit()
