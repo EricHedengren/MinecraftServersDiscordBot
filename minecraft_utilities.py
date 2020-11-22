@@ -30,9 +30,9 @@ def server_embed(server, address):
     return server_stats
 
 
-command_prefix = 'mu.' # config file
+command_prefix = '.mu ' # config file
 default_server_address = 'xps.apmonitor.com'
-channel_id = 779926033489985537 #772220260589240363
+channel_id = 772220260589240363
 role_id = 759862142508990544 # optional
 
 
@@ -49,7 +49,7 @@ bot = commands.Bot(command_prefix=command_prefix)
 @bot.event
 async def on_ready():
     print('bot is ready')
-    #await default_server_status.start()
+    await default_server_status.start()
 
 
 @tasks.loop(minutes=1)
