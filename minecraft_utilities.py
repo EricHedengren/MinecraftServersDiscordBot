@@ -30,7 +30,7 @@ def server_embed(server, address):
     return server_stats
 
 
-command_prefix = '.mu ' # config file
+command_prefixes = ['.mu ','!mu '] # config file
 default_server_address = 'xps.apmonitor.com'
 channel_id = 772220260589240363
 role_id = 759862142508990544 # optional
@@ -43,7 +43,7 @@ ping_message = '<@&{}> the server is online!'.format(role_id)
 default_server = mcstatus.MinecraftServer.lookup(default_server_address)
 
 
-bot = commands.Bot(command_prefix=command_prefix)
+bot = commands.Bot(command_prefix=command_prefixes)
 
 
 @bot.event
