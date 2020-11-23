@@ -6,7 +6,7 @@ import discord
 from discord.ext import commands, tasks
 
 
-def server_embed(server, address):
+def server_embed(server, server_address):
     server_data = server.status().raw
 
     number_online = server_data['players']['online']
@@ -14,7 +14,7 @@ def server_embed(server, address):
 
     server_stats = discord.Embed(title='Server is Online', description=server_data['description']['text'], color=discord.Color.green())
 
-    server_stats.add_field(name='Server Address', value=address)
+    server_stats.add_field(name='Server Address', value=server_address)
     server_stats.add_field(name='Version', value=server_data['version']['name'])
     server_stats.add_field(name='Number of Players Online', value=str(number_online)+'/'+str(online_max))
 
@@ -34,10 +34,10 @@ def server_embed(server, address):
 start_time = time.time()
 
 
-command_prefixes = ['.mu ','!mu '] # config file
+command_prefixes = ['.mu ','!mu ']
 default_server_address = 'xps.apmonitor.com' # 136.36.192.233
 channel_id = 772220260589240363
-role_id = 759862142508990544 # optional
+role_id = 759862142508990544
 
 
 status_message = None
@@ -99,16 +99,16 @@ async def server_offline():
         status_message = None
 
 
-@bot.command(aliases=['status','s'], help="Checks a Minecraft server's status with an inputted address.")
-async def server(ctx, server_address):
-    server_lookup = mcstatus.MinecraftServer.lookup(server_address)
+@bot.command(aliases=['status','s'], help="Checks a Minecraft server's status")
+async def server(ctx, address):
+    server_lookup = mcstatus.MinecraftServer.lookup(address)
 
     try:
         server_lookup.ping()
-        await ctx.send(embed=server_embed(server_lookup, server_address))
+        await ctx.send(embed=server_embed(server_lookup, address))
 
     except:
-        await ctx.send('Looks like that server is offline. Try a different IP address or try again later.')
+        await ctx.send('Looks like that server is offline. Try a different address or try again later.')
 
 
 @bot.command(aliases=['ping','l'], help="Returns the bot's latency")
@@ -118,7 +118,7 @@ async def latency(ctx):
 
 @bot.command(aliases=['r'], help="Returns how long the bot has been running")
 async def running(ctx):
-    await ctx.send("I've been running for **"+str(time.time()-start_time)+"** seconds.")
+    await ctx.send("I have been running for **"+str(time.time()-start_time)+"** seconds.")
 
 
 @commands.is_owner()
