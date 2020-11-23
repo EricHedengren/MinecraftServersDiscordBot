@@ -35,16 +35,17 @@ start_time = time.time()
 
 
 command_prefixes = ['.mu ','!mu ']
-default_server_address = 'xps.apmonitor.com' # 136.36.192.233
 channel_id = 772220260589240363
 role_id = 759862142508990544
 
 
-status_message = None
-current_server_status = None
-status_prefix = 'server status: '
 ping_message = '<@&{}> the server is online!'.format(role_id)
-default_server = mcstatus.MinecraftServer.lookup(default_server_address)
+
+default_server_addresses = ['xps.apmonitor.com', '136.36.192.233']
+default_servers_data = {}
+
+for address in default_server_addresses:
+    default_servers_data[address] = {'server_object': mcstatus.MinecraftServer.lookup(address), 'server_status': None, 'status_message': None}
 
 
 bot = commands.Bot(command_prefix=command_prefixes)
@@ -58,45 +59,45 @@ async def on_ready():
 
 @tasks.loop(minutes=1)
 async def default_server_status():
-    global current_server_status
     status_channel = bot.get_channel(channel_id)
 
-    try:
-        default_server.ping()
+    for server_address in default_servers_data:
+        server_object = default_servers_data[server_address]['server_object']
+        server_status = default_servers_data[server_address]['server_status']
+        status_message = default_servers_data[server_address]['status_message']
 
-        if current_server_status != 'online':
-            current_server_status = 'online'
-            print(status_prefix + current_server_status)
+        try:
+            server_object.ping()
 
-        await server_online(status_channel)
+            if server_status != 'online':
+                server_status = 'online'
+                print(server_address + ' status: ' + server_status)
 
-    except:
-        if current_server_status != 'offline':
-            current_server_status = 'offline'
-            print(status_prefix + current_server_status)
+            await server_online(status_channel, status_message, server_object, server_address)
 
-        await server_offline()
+        except:
+            if server_status != 'offline':
+                server_status = 'offline'
+                print(server_address + ' status: ' + server_status)
+
+            await server_offline(status_message)
 
 
-async def server_online(channel):
-    global status_message
-
-    if status_message != None:
-        await status_message.edit(embed=server_embed(default_server, default_server_address))
+async def server_online(channel, message, server, address):
+    if message != None:
+        await message.edit(embed=server_embed(server, address))
         print('edited status message')
 
-    elif status_message == None:
-        status_message = await channel.send(ping_message, embed=server_embed(default_server, default_server_address))
+    elif message == None:
+        message = await channel.send(ping_message, embed=server_embed(server, address))
         print('status message sent')
 
 
-async def server_offline():
-    global status_message
-
-    if status_message != None:
-        await status_message.delete()
+async def server_offline(message):
+    if message != None:
+        await message.delete()
         print('status message deleted')
-        status_message = None
+        message = None
 
 
 @bot.command(aliases=['status','s'], help="Checks a Minecraft server's status")
