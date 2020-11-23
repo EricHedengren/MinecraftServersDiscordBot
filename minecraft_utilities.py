@@ -1,4 +1,5 @@
 import sys
+import time
 import asyncio
 import mcstatus
 import discord
@@ -11,11 +12,11 @@ def server_embed(server, address):
     number_online = server_data['players']['online']
     online_max = server_data['players']['max']
 
-    server_stats = discord.Embed(title="Server is Online", description=server_data['description']['text'], color=discord.Color.green())
+    server_stats = discord.Embed(title='Server is Online', description=server_data['description']['text'], color=discord.Color.green())
 
-    server_stats.add_field(name="Server Address", value=address)
-    server_stats.add_field(name="Version", value=server_data['version']['name'])
-    server_stats.add_field(name="Number of Players Online", value=str(number_online)+'/'+str(online_max))
+    server_stats.add_field(name='Server Address', value=address)
+    server_stats.add_field(name='Version', value=server_data['version']['name'])
+    server_stats.add_field(name='Number of Players Online', value=str(number_online)+'/'+str(online_max))
 
     if number_online > 0:
         players = []
@@ -25,13 +26,16 @@ def server_embed(server, address):
 
         formatted_players = ', '.join(players)
 
-        server_stats.add_field(name="Players Online", value=formatted_players, inline=False)
+        server_stats.add_field(name='Players Online', value=formatted_players, inline=False)
 
     return server_stats
 
 
+start_time = time.time()
+
+
 command_prefixes = ['.mu ','!mu '] # config file
-default_server_address = 'xps.apmonitor.com'
+default_server_address = 'xps.apmonitor.com' # 136.36.192.233
 channel_id = 772220260589240363
 role_id = 759862142508990544 # optional
 
@@ -95,7 +99,7 @@ async def server_offline():
         status_message = None
 
 
-@bot.command(aliases=['status','s'], help="Checks a Minecraft server's status with an IP address.")
+@bot.command(aliases=['status','s'], help="Checks a Minecraft server's status with an inputted address.")
 async def server(ctx, server_address):
     server_lookup = mcstatus.MinecraftServer.lookup(server_address)
 
@@ -107,13 +111,18 @@ async def server(ctx, server_address):
         await ctx.send('Looks like that server is offline. Try a different IP address or try again later.')
 
 
-@bot.command(aliases=['ping'], help="Returns the bot's latency")
+@bot.command(aliases=['ping','l'], help="Returns the bot's latency")
 async def latency(ctx):
-    await ctx.send('Latency: '+str(bot.latency))
+    await ctx.send("My latency is **"+str(bot.latency)+"** seconds.")
+
+
+@bot.command(aliases=['r'], help="Returns how long the bot has been running")
+async def running(ctx):
+    await ctx.send("I've been running for **"+str(time.time()-start_time)+"** seconds.")
 
 
 @commands.is_owner()
-@bot.command(aliases=['reboot'], help="Updates the bot's code. Can only be used by the bot owner.")
+@bot.command(aliases=['u'], help="Updates the bot's code. This can only be used by the bot owner.")
 async def update(ctx):
     await ctx.send('Updating... Please wait a minute for the bot to go online again.')
     sys.exit()
