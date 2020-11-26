@@ -68,7 +68,7 @@ async def default_server_status():
         status_message = default_servers_data[server_address]['status_message']
 
         try:
-            server_object.ping()
+            server_object.ping() # check with status message, same time
 
             if server_status != 'online':
                 default_servers_data[server_address]['server_status'] = 'online'
