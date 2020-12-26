@@ -6,9 +6,7 @@ import discord
 from discord.ext import commands, tasks
 
 
-def server_embed(server, server_address):
-    server_data = server.status().raw
-
+def server_embed(server_address, server_data):
     number_online = server_data['players']['online']
     online_max = server_data['players']['max']
 
@@ -35,7 +33,7 @@ start_time = time.time()
 
 
 command_prefixes = ['.mu ','!mu ']
-channel_id = 772220260589240363
+channel_id = 781224329034989592 # 772220260589240363
 role_id = 759862142508990544
 default_server_addresses = ['xps.apmonitor.com', '136.36.192.233']
 
@@ -67,34 +65,36 @@ async def default_server_status():
         server_status = default_servers_data[server_address]['server_status']
         status_message = default_servers_data[server_address]['status_message']
 
+        # online
         try:
-            server_object.ping() # check with status message, same time
+            server_data = server_object.status().raw
 
+            # server status handling
             if server_status != 'online':
                 default_servers_data[server_address]['server_status'] = 'online'
                 print(server_address + ' status: ' + server_status)
 
-            await server_online(status_channel, status_message, server_object, server_address)
+            # status message handling
+            if status_message != None:
+                await status_message.edit(embed=server_embed(server_address, server_data))
+                print('edited status message')
 
+            elif status_message == None:
+                status_message = await status_channel.send(ping_message, embed=server_embed(server_address, server_data))
+                print('status message sent')
+
+        # offline/failed
         except:
+            # server status handling
             if server_status != 'offline':
                 default_servers_data[server_address]['server_status'] = 'offline'
                 print(server_address + ' status: ' + server_status)
 
+            # status message handling
             if status_message != None:
                 await status_message.delete()
                 print('status message deleted') # make meaningful print statement
                 default_servers_data[server_address]['status_message'] = None
-
-
-async def server_online(channel, message, server, address):
-    if message != None:
-        await message.edit(embed=server_embed(server, address))
-        print('edited status message')
-
-    elif message == None:
-        message = await channel.send(ping_message, embed=server_embed(server, address))
-        print('status message sent')
 
 
 @bot.command(aliases=['status','s'], help="Checks a Minecraft server's status")
@@ -102,8 +102,8 @@ async def server(ctx, address):
     server_lookup = mcstatus.MinecraftServer.lookup(address)
 
     try:
-        server_lookup.ping()
-        await ctx.send(embed=server_embed(server_lookup, address))
+        data = server_lookup.status().raw
+        await ctx.send(embed=server_embed(address, data))
 
     except:
         await ctx.send('Seems like that server is offline. Try a different address or try again later.')
