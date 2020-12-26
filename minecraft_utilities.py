@@ -60,6 +60,8 @@ async def default_server_status():
     status_channel = bot.get_channel(channel_id)
 
     for server_address in default_servers_data:
+        debug_prefix = '({})'.format(server_address)
+
         server_object = default_servers_data[server_address]['server_object']
         server_status = default_servers_data[server_address]['server_status']
         status_message = default_servers_data[server_address]['status_message']
@@ -71,30 +73,30 @@ async def default_server_status():
             # server status handling
             if server_status != 'online':
                 default_servers_data[server_address]['server_status'] = 'online'
-                print(server_address + ' status: online')
+                print(debug_prefix, 'status: online')
 
             # edit status message
             if status_message != None:
                 await status_message.edit(embed=server_embed(server_data, server_address))
-                print('edited status message')
+                print(debug_prefix, 'status message edited')
 
             # send status message
             elif status_message == None:
                 default_servers_data[server_address]['status_message'] = await status_channel.send(ping_message, embed=server_embed(server_data, server_address))
-                print('status message sent')
+                print(debug_prefix, 'status message sent')
 
         # offline
         except:
             # server status handling
             if server_status != 'offline':
                 default_servers_data[server_address]['server_status'] = 'offline'
-                print(server_address + ' status: offline')
+                print(debug_prefix, 'status: offline')
 
             # delete status message
             if status_message != None:
                 await status_message.delete()
-                print('status message deleted')
                 default_servers_data[server_address]['status_message'] = None
+                print(debug_prefix, 'status message deleted')
 
 
 @bot.command(aliases=['status','s'], help="Checks a Minecraft server's status")
@@ -106,30 +108,30 @@ async def server(ctx, address):
         await ctx.send(embed=server_embed(data, address))
 
     except:
-        await ctx.send('Seems like that server is offline. Try a different address or try again later.')
+        await ctx.send("Seems like that server is offline. Try a different address or try again later.")
 
 
-@bot.command(aliases=['ping','l'], help="Returns the bot's latency")
+@bot.command(aliases=['l','ping','p'], help="Returns the bot's latency")
 async def latency(ctx):
-    await ctx.send("My latency is **"+str(bot.latency)+"** seconds.")
+    await ctx.send("My latency is **{}** seconds.".format(bot.latency))
 
 
 @bot.command(aliases=['u'], help="Returns how long the bot has been online")
 async def uptime(ctx):
-    await ctx.send("I have been online for **"+str(time.time()-start_time)+"** seconds.")
+    await ctx.send("I have been online for **{}** seconds.".format(time.time()-start_time))
 
 
 @commands.is_owner()
-@bot.command(help='Restarts the bot.')
+@bot.command(help="Restarts the bot")
 async def restart(ctx):
-    await ctx.send('Restarting... Please wait a minute for the bot to go online again.')
+    await ctx.send("Restarting... Please wait a minute for the bot to go online again.")
     sys.exit() # send value to terminal
 
 
 @commands.is_owner()
-@bot.command(help='Shuts down the bot.')
+@bot.command(help="Shuts down the bot")
 async def shutdown(ctx):
-    await ctx.send('Shutting down...')
+    await ctx.send("Shutting down...")
     sys.exit() # send value to terminal
 
 
