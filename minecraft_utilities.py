@@ -1,6 +1,6 @@
+import os
 import sys
 import time
-import asyncio
 import mcstatus
 import discord
 from discord.ext import commands, tasks
@@ -125,14 +125,14 @@ async def uptime(ctx):
 @bot.command(help="Restarts the bot")
 async def restart(ctx):
     await ctx.send("Restarting... Please wait a minute for the bot to go online again.")
-    sys.exit() # send value to terminal
+    os.system("sudo reboot")
 
 
 @commands.is_owner()
 @bot.command(help="Shuts down the bot")
 async def shutdown(ctx):
     await ctx.send("Shutting down...")
-    sys.exit() # send value to terminal
+    os.system("sudo shutdown now")
 
 
 bot.run('Nzc4NDI2NTEyMjY4NTkxMTE3.X7R0Lg.ogul_Yi1PDKVoNp4hezHdsJe9SI')
