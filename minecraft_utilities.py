@@ -34,7 +34,6 @@ def server_embed(server_data, server_address):
 
 start_time = time.time()
 
-
 command_prefixes = ['.mu ','!mu ']
 channel_id = 781224329034989592 #772220260589240363
 role_id = 759862142508990544
@@ -116,12 +115,13 @@ async def server(ctx, address):
 
 @bot.command(aliases=['l','ping','p'], help="Returns the bot's latency")
 async def latency(ctx):
-    await ctx.send("My latency is **{}** seconds.".format(bot.latency))
+    await ctx.send("My latency is **{:.2f}** milliseconds.".format(bot.latency * 1000))
 
 
 @bot.command(aliases=['u'], help="Returns how long the bot has been online")
 async def uptime(ctx):
-    await ctx.send("I have been online for **{}** seconds.".format(time.time()-start_time))
+    total_uptime = time.strftime('%H hours %M minutes %S seconds', time.gmtime(time.time()-start_time))
+    await ctx.send("I have been online for **{}**.".format(total_uptime))
 
 
 @commands.is_owner()
