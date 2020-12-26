@@ -7,15 +7,18 @@ from discord.ext import commands, tasks
 
 
 def server_embed(server_data, server_address):
-    number_online = server_data['players']['online']
-    online_max = server_data['players']['max']
-
     server_stats = discord.Embed(title='Server is Online', description=server_data['description']['text'], color=discord.Color.green())
 
     server_stats.add_field(name='Server Address', value=server_address)
     server_stats.add_field(name='Version', value=server_data['version']['name'])
+
+    # number of players
+    number_online = server_data['players']['online']
+    online_max = server_data['players']['max']
+
     server_stats.add_field(name='Number of Players Online', value=str(number_online)+'/'+str(online_max))
 
+    # player names
     if number_online > 0:
         players = []
 
@@ -33,7 +36,7 @@ start_time = time.time()
 
 
 command_prefixes = ['.mu ','!mu ']
-channel_id = 781224329034989592 # 772220260589240363
+channel_id = 772220260589240363
 role_id = 759862142508990544
 ping_message = '<@&{}> the server is online!'.format(role_id)
 
@@ -122,9 +125,9 @@ async def uptime(ctx):
 
 
 @commands.is_owner()
-@bot.command(help="Restarts the bot")
-async def restart(ctx):
-    await ctx.send("Restarting... Please wait a minute for the bot to go online again.")
+@bot.command(help="Reboots the bot")
+async def reboot(ctx):
+    await ctx.send("Rebooting... Please wait for the bot to go online again.")
     os.system("sudo reboot")
 
 
