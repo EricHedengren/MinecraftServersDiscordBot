@@ -36,7 +36,7 @@ start_time = time.time()
 
 
 command_prefixes = ['.mu ','!mu ']
-channel_id = 772220260589240363
+channel_id = 781224329034989592 #772220260589240363
 role_id = 759862142508990544
 ping_message = '<@&{}> the server is online!'.format(role_id)
 
@@ -55,11 +55,11 @@ bot = commands.Bot(command_prefix=command_prefixes)
 @bot.event
 async def on_ready():
     print('bot is ready')
-    await default_server_status.start()
+    await default_servers_status.start()
 
 
 @tasks.loop(minutes=1)
-async def default_server_status():
+async def default_servers_status():
     status_channel = bot.get_channel(channel_id)
 
     for server_address in default_servers_data:
@@ -128,6 +128,7 @@ async def uptime(ctx):
 @bot.command(aliases=['restart'], help="Reboots the bot")
 async def reboot(ctx):
     await ctx.send("Rebooting... Please wait for the bot to go online again.")
+    await shutdown_protocol()
     os.system("sudo reboot")
 
 
@@ -135,7 +136,20 @@ async def reboot(ctx):
 @bot.command(help="Shuts down the bot")
 async def shutdown(ctx):
     await ctx.send("Shutting down...")
+    await shutdown_protocol()
     os.system("sudo shutdown now")
+
+
+async def shutdown_protocol():
+    default_servers_status.cancel()
+    print('canceled default servers loop')
+
+    for server_address in default_servers_data:
+        status_message = default_servers_data[server_address]['status_message']
+
+        if status_message != None:
+            await status_message.delete()
+            print('({})'.format(server), 'status message deleted')
 
 
 bot.run('Nzc4NDI2NTEyMjY4NTkxMTE3.X7R0Lg.ogul_Yi1PDKVoNp4hezHdsJe9SI')
