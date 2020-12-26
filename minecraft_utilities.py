@@ -125,7 +125,7 @@ async def uptime(ctx):
 
 
 @commands.is_owner()
-@bot.command(help="Reboots the bot")
+@bot.command(aliases=['restart'], help="Reboots the bot")
 async def reboot(ctx):
     await ctx.send("Rebooting... Please wait for the bot to go online again.")
     os.system("sudo reboot")
