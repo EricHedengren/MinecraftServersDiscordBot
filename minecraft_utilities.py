@@ -35,10 +35,10 @@ start_time = time.time()
 command_prefixes = ['.mu ','!mu ']
 channel_id = 781224329034989592 # 772220260589240363
 role_id = 759862142508990544
-default_server_addresses = ['xps.apmonitor.com', '136.36.192.233']
-
-
 ping_message = '<@&{}> the server is online!'.format(role_id)
+
+
+default_server_addresses = ['xps.apmonitor.com', '136.36.192.233']
 
 default_servers_data = {}
 
@@ -72,7 +72,7 @@ async def default_server_status():
             # server status handling
             if server_status != 'online':
                 default_servers_data[server_address]['server_status'] = 'online'
-                print(server_address + ' status: ' + server_status)
+                print(server_address + ' status: online')
 
             # status message handling
             if status_message != None:
@@ -80,7 +80,7 @@ async def default_server_status():
                 print('edited status message')
 
             elif status_message == None:
-                status_message = await status_channel.send(ping_message, embed=server_embed(server_address, server_data))
+                default_servers_data[server_address]['status_message'] = await status_channel.send(ping_message, embed=server_embed(server_address, server_data))
                 print('status message sent')
 
         # offline/failed
@@ -88,7 +88,7 @@ async def default_server_status():
             # server status handling
             if server_status != 'offline':
                 default_servers_data[server_address]['server_status'] = 'offline'
-                print(server_address + ' status: ' + server_status)
+                print(server_address + ' status: offline')
 
             # status message handling
             if status_message != None:
