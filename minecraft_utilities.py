@@ -7,7 +7,14 @@ from discord.ext import commands, tasks
 
 
 def server_embed(server_data, server_address):
-    server_stats = discord.Embed(title='Server is Online', description=server_data['description']['text'], color=discord.Color.green())
+    # description
+    full_description = ''
+
+    for list_item in server_data['description']['extra']:
+        full_description += list_item['text']
+
+    # main embed
+    server_stats = discord.Embed(title='Server is Online', description=full_description, color=discord.Color.green())
 
     server_stats.add_field(name='Server Address', value=server_address)
     server_stats.add_field(name='Version', value=server_data['version']['name'])
@@ -19,11 +26,11 @@ def server_embed(server_data, server_address):
     server_stats.add_field(name='Number of Players Online', value=str(number_online)+'/'+str(online_max))
 
     # player names
-    if number_online > 0:
+    if 'sample' in server_data['players']:
         players = []
 
-        for i in range(len(server_data['players']['sample'])):
-            players.append(server_data['players']['sample'][i]['name'])
+        for player in server_data['players']['sample']:
+            players.append(player['name'])
 
         formatted_players = ', '.join(players)
 
@@ -103,14 +110,36 @@ async def default_servers_status():
 
 @bot.command(aliases=['status','s'], help="Checks a Minecraft server's status")
 async def server(ctx, address):
+    # restricted addresses
+    if address == 'localhost':
+        await ctx.send("'**{}**' is an invalid server address and therefore does not exist. Please check your spelling or try a different server address.".format(address))
+        return
+
     server_object = mcstatus.MinecraftServer.lookup(address)
 
     try:
         data = server_object.status().raw
         await ctx.send(embed=server_embed(data, address))
 
-    except:
-        await ctx.send("Seems like that server is offline. Try a different address or try again later.")
+    except Exception as e:
+        # offline
+        if str(e) == 'timed out':
+            await ctx.send("Looks like that server is offline. Please check back later or try a different server address.")
+
+        # invalid
+        elif str(e) == '[Errno 11001] getaddrinfo failed':
+            await ctx.send("'**{}**' is an invalid server address and therefore does not exist. Please check your spelling or try a different server address.".format(address))
+
+        # did not respond
+        elif str(e) == 'Server did not respond with any information!':
+            await ctx.send("That server did not respond with any information. It could be restricted or just starting up.")
+
+        # other
+        else:
+            await ctx.send("Sorry, an unknown error occured. Please try a different server address or check back later.")
+
+            bot_owner = bot.get_user(539958171167490058)
+            await bot_owner.send("**Server Status Unknown Error:**\nIP address: {address}\nError: {error}".format(error=e, address=address))
 
 
 @bot.command(aliases=['l','ping','p'], help="Returns the bot's latency")
