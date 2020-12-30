@@ -164,15 +164,10 @@ async def runtime(ctx):
 @commands.is_owner()
 @bot.command()
 async def update(ctx):
-    await ctx.send("Updating the bot..."); print('updating')
-    os.system('./update.sh')
-
-
-@commands.is_owner()
-@bot.command()
-async def stop(ctx):
-    await ctx.send("Stopping the bot..."); print('stopping')
+    os.system('./update.sh'); print('updated')
+    await ctx.send("Updated the bot")
     await shutdown_protocol()
+    time.sleep(3)
     sys.exit()
 
 
