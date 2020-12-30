@@ -41,7 +41,7 @@ def server_embed(server_data, server_address):
 
 start_time = time.time()
 
-bot_version = '1.1.1'
+bot_version = '1.1.2'
 
 command_prefixes = ['.mu ','!mu ']
 channel_id = 781224329034989592 #772220260589240363
