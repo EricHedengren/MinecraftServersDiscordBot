@@ -40,8 +40,8 @@ def server_embed(server_data, server_address):
 
 
 start_time = time.time()
-
-bot_version = '1.1.2'
+bot_version = '1.1.3'
+print('version:', bot_version)
 
 command_prefixes = ['.mu ','!mu ']
 channel_id = 781224329034989592 #772220260589240363
@@ -185,6 +185,7 @@ async def shutdown(ctx):
 
 
 async def shutdown_protocol():
+    print('starting shutdown protocol')
     default_servers_status.cancel()
     print('canceled default servers loop')
 
