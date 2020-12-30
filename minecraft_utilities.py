@@ -144,7 +144,7 @@ async def server(ctx, address):
             await bot_owner.send("**Server Status Unknown Error:**\nIP address: {address}\nError: {error}\nError Type: {type}".format(address=address, error=e, type=type(e)))
 
 
-@bot.command("Returns the bot's version")
+@bot.command(aliases=['info'], help="Returns the bot's version")
 async def version(ctx):
     await ctx.send("Version: **{}**").format(bot_version)
 
@@ -154,7 +154,7 @@ async def latency(ctx):
     await ctx.send("My latency is **{:.2f}** milliseconds.".format(bot.latency * 1000))
 
 
-@bot.command(aliases=['u'], help="Returns how long the bot has been running")
+@bot.command(aliases=['r'], help="Returns how long the bot has been running")
 async def runtime(ctx):
     formatted_runtime = time.strftime('%H hours %M minutes %S seconds', time.gmtime(time.time()-start_time))
     await ctx.send("I have been running for **{}**.".format(formatted_runtime))
