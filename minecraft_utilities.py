@@ -6,11 +6,6 @@ import discord
 from discord.ext import commands, tasks
 
 
-start_time = time.time()
-bot_version = '1.1.1'
-print('version:', bot_version)
-
-
 def server_embed(server_data, server_address):
     # description
     full_description = ''
@@ -44,29 +39,37 @@ def server_embed(server_data, server_address):
     return server_stats
 
 
-command_prefixes = ['.mu ','!mu ']
+# main 
+bot_version = '1.1.1'
+formatted_version = "Version: **{}**".format(bot_version)
+print('version:', bot_version)
+start_time = time.time()
+
+
+# discord initial variables
 channel_id = 781224329034989592 #772220260589240363
 role_id = 759862142508990544
 ping_message = '<@&{}> the server is online!'.format(role_id)
+command_prefixes = ['.mu ','!mu ']
+bot = commands.Bot(command_prefix=command_prefixes)
 
 
+# servers dictionary creation
 default_server_addresses = ['xps.apmonitor.com', '136.36.192.233']
-
 default_servers_data = {}
 
 for address in default_server_addresses:
     default_servers_data[address] = {'server_object': mcstatus.MinecraftServer.lookup(address), 'server_status': None, 'status_message': None}
 
 
-bot = commands.Bot(command_prefix=command_prefixes)
-
-
+# runs when bot is ready
 @bot.event
 async def on_ready():
     print('bot is ready')
     await default_servers_status.start()
 
 
+# servers background check
 @tasks.loop(minutes=1)
 async def default_servers_status():
     status_channel = bot.get_channel(channel_id)
@@ -111,6 +114,7 @@ async def default_servers_status():
                 print(debug_prefix, 'status message deleted')
 
 
+# server status command 
 @bot.command(aliases=['status','s'], help="Checks a Minecraft server's status")
 async def server(ctx, address):
     # restricted addresses
@@ -145,44 +149,35 @@ async def server(ctx, address):
             await bot_owner.send("**Server Status Unknown Error:**\nIP address: {address}\nError: {error}\nError Type: {type}".format(address=address, error=e, type=type(e)))
 
 
-@bot.command(help="Returns the bot's version")
+# combined information
+@bot.command(aliases=['i'], help="Returns the bot's version, latency, and runtime")
+async def info(ctx):
+    latency = "Latency: **{:.2f}** ms".format(bot.latency * 1000)
+    runtime = "Runtime: {}".format(time.strftime('**%H** hours **%M** minutes **%S** seconds', time.gmtime(time.time()-start_time)))
+    await ctx.send(formatted_version, latency, runtime)
+
+# version
+@bot.command(aliases=['v'], help="Returns the bot's version")
 async def version(ctx):
-    await ctx.send("Version: **{}**".format(bot_version))
+    await ctx.send(formatted_version)
 
-
+# latency
 @bot.command(aliases=['l','ping','p'], help="Returns the bot's latency")
 async def latency(ctx):
     await ctx.send("My latency is **{:.2f}** milliseconds.".format(bot.latency * 1000))
 
-
-@bot.command(aliases=['r'], help="Returns how long the bot has been running")
+# runtime
+@bot.command(aliases=['r'], help="Returns the bot's runtime")
 async def runtime(ctx):
-    formatted_runtime = time.strftime('%H hours %M minutes %S seconds', time.gmtime(time.time()-start_time))
-    await ctx.send("I have been running for **{}**.".format(formatted_runtime))
+    runtime = time.strftime('**%H** hours **%M** minutes **%S** seconds', time.gmtime(time.time()-start_time))
+    await ctx.send("I have been running for **{}**.".format(runtime))
 
 
-@commands.is_owner()
-@bot.command(help="Updates the bot's code")
-async def update(ctx):
-    os.system('./update.sh'); print('updated')
-    await ctx.send("Updated the bot")
-    await shutdown_protocol()
-    time.sleep(3) #remove
-    sys.exit()
-
-
-@commands.is_owner()
-@bot.command(help="Shuts down the bot")
-async def shutdown(ctx):
-    await ctx.send("Shutting down..."); print('shutting down')
-    await shutdown_protocol()
-    os.system('sudo shutdown now')
-
-
+# bot owner commands
 async def shutdown_protocol():
     print('starting shutdown protocol')
     default_servers_status.cancel()
-    print('canceled default servers loop')
+    print('stopped servers background check')
 
     for server_address in default_servers_data:
         status_message = default_servers_data[server_address]['status_message']
@@ -190,6 +185,26 @@ async def shutdown_protocol():
         if status_message != None:
             await status_message.delete()
             print('({})'.format(server), 'status message deleted')
+
+# update command
+@commands.is_owner()
+@bot.command(help="Updates the bot's code")
+async def update(ctx):
+    await ctx.send("Updating the bot..."); print('updating')
+    os.system('./update.sh')
+    print('updated')
+
+    await shutdown_protocol()
+    sys.exit()
+
+# shutdown command
+@commands.is_owner()
+@bot.command(help="Shuts down the bot")
+async def shutdown(ctx):
+    print('shutting down')
+    await ctx.send("Shutting down...")
+    await shutdown_protocol()
+    os.system('sudo shutdown now')
 
 
 bot.run('Nzc4NDI2NTEyMjY4NTkxMTE3.X7R0Lg.ogul_Yi1PDKVoNp4hezHdsJe9SI')
