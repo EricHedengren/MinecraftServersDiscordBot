@@ -39,9 +39,9 @@ def server_embed(server_data, server_address):
     return server_stats
 
 
-print('version: 1.1.2')
-
 start_time = time.time()
+
+bot_version = '1.1.1'
 
 command_prefixes = ['.mu ','!mu ']
 channel_id = 781224329034989592 #772220260589240363
@@ -144,15 +144,20 @@ async def server(ctx, address):
             await bot_owner.send("**Server Status Unknown Error:**\nIP address: {address}\nError: {error}\nError Type: {type}".format(address=address, error=e, type=type(e)))
 
 
+@bot.command("Returns the bot's version")
+async def version(ctx):
+    await ctx.send("Version: **{}**").format(bot_version)
+
+
 @bot.command(aliases=['l','ping','p'], help="Returns the bot's latency")
 async def latency(ctx):
     await ctx.send("My latency is **{:.2f}** milliseconds.".format(bot.latency * 1000))
 
 
-@bot.command(aliases=['u'], help="Returns how long the bot has been online")
-async def uptime(ctx):
-    total_uptime = time.strftime('%H hours %M minutes %S seconds', time.gmtime(time.time()-start_time))
-    await ctx.send("I have been online for **{}**.".format(total_uptime))
+@bot.command(aliases=['u'], help="Returns how long the bot has been running")
+async def runtime(ctx):
+    formatted_runtime = time.strftime('%H hours %M minutes %S seconds', time.gmtime(time.time()-start_time))
+    await ctx.send("I have been running for **{}**.".format(formatted_runtime))
 
 
 @commands.is_owner()
