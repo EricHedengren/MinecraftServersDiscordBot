@@ -6,6 +6,11 @@ import discord
 from discord.ext import commands, tasks
 
 
+start_time = time.time()
+bot_version = '1.1.1'
+print('version:', bot_version)
+
+
 def server_embed(server_data, server_address):
     # description
     full_description = ''
@@ -38,10 +43,6 @@ def server_embed(server_data, server_address):
 
     return server_stats
 
-
-start_time = time.time()
-bot_version = '1.1.1'
-print('version:', bot_version)
 
 command_prefixes = ['.mu ','!mu ']
 channel_id = 781224329034989592 #772220260589240363
@@ -169,8 +170,8 @@ async def update(ctx):
 
 @commands.is_owner()
 @bot.command()
-async def refresh(ctx):
-    await ctx.send("Refreshing the bot..."); print('refreshing')
+async def stop(ctx):
+    await ctx.send("Stopping the bot..."); print('stopping')
     await shutdown_protocol()
     sys.exit()
 
