@@ -146,7 +146,7 @@ async def server(ctx, address):
 
 @bot.command(aliases=['info'], help="Returns the bot's version")
 async def version(ctx):
-    await ctx.send("Version: **{}**").format(bot_version)
+    await ctx.send("Version: **{}**".format(bot_version))
 
 
 @bot.command(aliases=['l','ping','p'], help="Returns the bot's latency")
