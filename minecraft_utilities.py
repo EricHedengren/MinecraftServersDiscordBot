@@ -65,7 +65,7 @@ for address in default_server_addresses:
 @bot.event
 async def on_ready():
     print('bot is ready')
-    await default_servers_status.start()
+    #await default_servers_status.start()
 
 
 # servers background check
