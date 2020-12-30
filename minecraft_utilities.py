@@ -46,7 +46,7 @@ start_time = time.time()
 
 
 # discord initial variables
-channel_id = 781224329034989592 #772220260589240363
+channel_id = 772220260589240363
 role_id = 759862142508990544
 ping_message = '<@&{}> the server is online!'.format(role_id)
 command_prefixes = ['.mu ','!mu ']
@@ -54,7 +54,7 @@ bot = commands.Bot(command_prefix=command_prefixes)
 
 
 # servers dictionary creation
-default_server_addresses = ['xps.apmonitor.com', '136.36.192.233']
+default_server_addresses = ['136.36.192.233'] # 'xps.apmonitor.com'
 default_servers_data = {}
 
 for address in default_server_addresses:
@@ -176,9 +176,9 @@ async def shutdown_protocol():
 @commands.is_owner()
 @bot.command(help="Updates the bot's code")
 async def update(ctx):
-    await ctx.send("Updating the bot..."); print('updating')
+    print('updating')
+    await ctx.send("Updating the bot...")
     os.system('./update.sh')
-    print('updated')
 
     await shutdown_protocol()
     sys.exit()
