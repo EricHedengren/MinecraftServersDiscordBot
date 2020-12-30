@@ -40,7 +40,7 @@ def server_embed(server_data, server_address):
 
 
 start_time = time.time()
-bot_version = '1.1.3'
+bot_version = '1.1.1'
 print('version:', bot_version)
 
 command_prefixes = ['.mu ','!mu ']
@@ -162,6 +162,13 @@ async def runtime(ctx):
 
 @commands.is_owner()
 @bot.command()
+async def update(ctx):
+    await ctx.send("Updating the bot..."); print('updating')
+    os.system('./update.sh')
+
+
+@commands.is_owner()
+@bot.command()
 async def refresh(ctx):
     await ctx.send("Refreshing the bot..."); print('refreshing')
     await shutdown_protocol()
@@ -173,7 +180,7 @@ async def refresh(ctx):
 async def reboot(ctx):
     await ctx.send("Rebooting... Please wait for the bot to go online again."); print('rebooting')
     await shutdown_protocol()
-    os.system("sudo reboot")
+    os.system('sudo reboot')
 
 
 @commands.is_owner()
@@ -181,7 +188,7 @@ async def reboot(ctx):
 async def shutdown(ctx):
     await ctx.send("Shutting down..."); print('shutting down')
     await shutdown_protocol()
-    os.system("sudo shutdown now")
+    os.system('sudo shutdown now')
 
 
 async def shutdown_protocol():
