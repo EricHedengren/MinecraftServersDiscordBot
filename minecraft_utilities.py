@@ -41,7 +41,6 @@ def server_embed(server_data, server_address):
 
 # main 
 bot_version = '1.1.1'
-formatted_version = "Version: **{}**".format(bot_version)
 print('version:', bot_version)
 start_time = time.time()
 
@@ -152,30 +151,15 @@ async def server(ctx, address):
 # combined information
 @bot.command(aliases=['i'], help="Returns the bot's version, latency, and runtime")
 async def info(ctx):
+    version = "Version: **{}**".format(bot_version)
     latency = "Latency: **{:.2f}** ms".format(bot.latency * 1000)
     runtime = "Runtime: {}".format(time.strftime('**%H** hours **%M** minutes **%S** seconds', time.gmtime(time.time()-start_time)))
 
-    combined_info = [formatted_version, latency, runtime]
+    combined_info = [version, latency, runtime]
     await ctx.send('\n'.join(combined_info))
 
-# version
-@bot.command(aliases=['v'], help="Returns the bot's version")
-async def version(ctx):
-    await ctx.send(formatted_version)
 
-# latency
-@bot.command(aliases=['l','ping','p'], help="Returns the bot's latency")
-async def latency(ctx):
-    await ctx.send("My latency is **{:.2f}** milliseconds.".format(bot.latency * 1000))
-
-# runtime
-@bot.command(aliases=['r'], help="Returns the bot's runtime")
-async def runtime(ctx):
-    runtime = time.strftime('**%H** hours **%M** minutes **%S** seconds', time.gmtime(time.time()-start_time))
-    await ctx.send("I have been running for {}.".format(runtime))
-
-
-# bot owner commands
+# bot owner section
 async def shutdown_protocol():
     print('starting shutdown protocol')
     default_servers_status.cancel()
