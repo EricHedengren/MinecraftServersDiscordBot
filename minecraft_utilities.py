@@ -162,12 +162,12 @@ async def runtime(ctx):
 
 
 @commands.is_owner()
-@bot.command()
+@bot.command(help="Updates the bot's code")
 async def update(ctx):
     os.system('./update.sh'); print('updated')
     await ctx.send("Updated the bot")
     await shutdown_protocol()
-    time.sleep(3)
+    time.sleep(3) #remove
     sys.exit()
 
 
