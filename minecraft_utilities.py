@@ -163,7 +163,7 @@ async def runtime(ctx):
 @commands.is_owner()
 @bot.command()
 async def refresh(ctx):
-    await ctx.send("Refreshing the bot...")
+    await ctx.send("Refreshing the bot..."); print('refreshing')
     await shutdown_protocol()
     sys.exit()
 
@@ -171,7 +171,7 @@ async def refresh(ctx):
 @commands.is_owner()
 @bot.command(aliases=['restart'], help="Reboots the bot")
 async def reboot(ctx):
-    await ctx.send("Rebooting... Please wait for the bot to go online again.")
+    await ctx.send("Rebooting... Please wait for the bot to go online again."); print('rebooting')
     await shutdown_protocol()
     os.system("sudo reboot")
 
@@ -179,7 +179,7 @@ async def reboot(ctx):
 @commands.is_owner()
 @bot.command(help="Shuts down the bot")
 async def shutdown(ctx):
-    await ctx.send("Shutting down...")
+    await ctx.send("Shutting down..."); print('shutting down')
     await shutdown_protocol()
     os.system("sudo shutdown now")
 
