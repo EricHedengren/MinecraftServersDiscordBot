@@ -7,7 +7,7 @@ from discord.ext import commands, tasks
 
 
 start_time = time.time()
-bot_version = '1.1.2'
+bot_version = '1.1.1'
 print('version:', bot_version)
 
 
@@ -145,7 +145,7 @@ async def server(ctx, address):
             await bot_owner.send("**Server Status Unknown Error:**\nIP address: {address}\nError: {error}\nError Type: {type}".format(address=address, error=e, type=type(e)))
 
 
-@bot.command(aliases=['info'], help="Returns the bot's version")
+@bot.command(help="Returns the bot's version")
 async def version(ctx):
     await ctx.send("Version: **{}**".format(bot_version))
 
@@ -174,14 +174,6 @@ async def stop(ctx):
     await ctx.send("Stopping the bot..."); print('stopping')
     await shutdown_protocol()
     sys.exit()
-
-
-@commands.is_owner()
-@bot.command(aliases=['restart'], help="Reboots the bot")
-async def reboot(ctx):
-    await ctx.send("Rebooting... Please wait for the bot to go online again."); print('rebooting')
-    await shutdown_protocol()
-    os.system('sudo reboot')
 
 
 @commands.is_owner()
