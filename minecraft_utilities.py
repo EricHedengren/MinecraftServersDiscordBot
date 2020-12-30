@@ -39,7 +39,7 @@ def server_embed(server_data, server_address):
     return server_stats
 
 
-print('version: 1.1.1')
+print('version: 1.1.2')
 
 start_time = time.time()
 
