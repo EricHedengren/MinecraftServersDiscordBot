@@ -161,6 +161,14 @@ async def runtime(ctx):
 
 
 @commands.is_owner()
+@bot.command()
+async def refresh(ctx):
+    await ctx.send("Refreshing the bot...")
+    await shutdown_protocol()
+    sys.exit()
+
+
+@commands.is_owner()
 @bot.command(aliases=['restart'], help="Reboots the bot")
 async def reboot(ctx):
     await ctx.send("Rebooting... Please wait for the bot to go online again.")
