@@ -154,7 +154,9 @@ async def server(ctx, address):
 async def info(ctx):
     latency = "Latency: **{:.2f}** ms".format(bot.latency * 1000)
     runtime = "Runtime: {}".format(time.strftime('**%H** hours **%M** minutes **%S** seconds', time.gmtime(time.time()-start_time)))
-    await ctx.send(formatted_version, latency, runtime)
+
+    combined_info = [formatted_version, latency, runtime]
+    await ctx.send('\n'.join(combined_info))
 
 # version
 @bot.command(aliases=['v'], help="Returns the bot's version")
@@ -170,7 +172,7 @@ async def latency(ctx):
 @bot.command(aliases=['r'], help="Returns the bot's runtime")
 async def runtime(ctx):
     runtime = time.strftime('**%H** hours **%M** minutes **%S** seconds', time.gmtime(time.time()-start_time))
-    await ctx.send("I have been running for **{}**.".format(runtime))
+    await ctx.send("I have been running for {}.".format(runtime))
 
 
 # bot owner commands
