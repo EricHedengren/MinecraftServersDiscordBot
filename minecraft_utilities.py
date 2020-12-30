@@ -178,7 +178,7 @@ async def shutdown_protocol():
 async def update(ctx):
     print('updating')
     await ctx.send("Updating the bot...")
-    os.system('./update.sh')
+    #os.system('./update.sh')
 
     await shutdown_protocol()
     sys.exit()
