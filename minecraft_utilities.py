@@ -40,7 +40,7 @@ def server_embed(server_data, server_address):
 
 
 # main 
-bot_version = '1.1.2'
+bot_version = '1.1.1'
 print('version:', bot_version)
 start_time = time.time()
 
