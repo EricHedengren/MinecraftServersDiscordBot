@@ -178,19 +178,10 @@ async def shutdown_protocol():
 async def update(ctx):
     print('updating')
     await ctx.send("Updating the bot...")
-    os.system('./update.sh')
+    #os.system('./update.sh')
 
     await shutdown_protocol()
     sys.exit()
-
-# shutdown command
-@commands.is_owner()
-@bot.command(help="Shuts down the bot")
-async def shutdown(ctx):
-    print('shutting down')
-    await ctx.send("Shutting down...")
-    await shutdown_protocol()
-    os.system('sudo shutdown now')
 
 
 bot.run('Nzc4NDI2NTEyMjY4NTkxMTE3.X7R0Lg.ogul_Yi1PDKVoNp4hezHdsJe9SI')
