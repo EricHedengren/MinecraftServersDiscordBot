@@ -7,6 +7,7 @@ from discord.ext import commands, tasks
 import discord_config
 
 
+# minecraft server status embed
 def server_embed(server_data, server_address):
     # description
     full_description = ''
@@ -15,16 +16,16 @@ def server_embed(server_data, server_address):
         full_description += list_item['text']
 
     # main embed
-    server_stats = discord.Embed(title='Server is Online', description=full_description, color=discord.Color.green())
+    server_embed = discord.Embed(title='Server is Online', description=full_description, color=discord.Color.green())
 
-    server_stats.add_field(name='Server Address', value=server_address)
-    server_stats.add_field(name='Version', value=server_data['version']['name'])
+    server_embed.add_field(name='Server Address', value=server_address)
+    server_embed.add_field(name='Version', value=server_data['version']['name'])
 
     # number of players
     number_online = server_data['players']['online']
     online_max = server_data['players']['max']
 
-    server_stats.add_field(name='Number of Players Online', value=str(number_online)+'/'+str(online_max))
+    server_embed.add_field(name='Number of Players Online', value=str(number_online)+'/'+str(online_max))
 
     # player names
     if 'sample' in server_data['players']:
@@ -35,15 +36,15 @@ def server_embed(server_data, server_address):
 
         formatted_players = ', '.join(players)
 
-        server_stats.add_field(name='Players Online', value=formatted_players, inline=False)
+        server_embed.add_field(name='Players Online', value=formatted_players, inline=False)
 
-    return server_stats
+    return server_embed
 
 
 # main variables
-bot_version = '1.1.1'
-print('version:', bot_version)
 start_time = time.time()
+bot_version = '1.1.2'
+print('version:', bot_version)
 
 
 # discord initial variables
@@ -156,8 +157,14 @@ async def info(ctx):
     await ctx.send('\n'.join([version, latency, runtime]))
 
 
-# bot owner section
-async def shutdown_protocol():
+# update command
+@commands.is_owner()
+@bot.command(help="Updates the bot's code")
+async def update(ctx):
+    print('updating')
+    await ctx.send("Updating the bot...")
+    os.system('./update.sh')
+
     print('starting shutdown protocol')
     default_servers_status.cancel()
     print('stopped servers background check')
@@ -169,15 +176,6 @@ async def shutdown_protocol():
             await status_message.delete()
             print('({})'.format(server), 'status message deleted')
 
-# update command
-@commands.is_owner()
-@bot.command(help="Updates the bot's code")
-async def update(ctx):
-    print('updating')
-    await ctx.send("Updating the bot...")
-    os.system('./update.sh')
-
-    await shutdown_protocol()
     sys.exit()
 
 
