@@ -4,9 +4,7 @@ import time
 import mcstatus
 import discord
 from discord.ext import commands, tasks
-
-import bot_token
-
+import discord_config
 
 
 def server_embed(server_data, server_address):
@@ -49,11 +47,8 @@ start_time = time.time()
 
 
 # discord initial variables
-channel_id = 772220260589240363
-role_id = 759862142508990544
-ping_message = '<@&{}> the server is online!'.format(role_id)
-command_prefixes = ['.mu ','!mu ']
-bot = commands.Bot(command_prefix=command_prefixes)
+ping_message = '<@&{}> the server is online!'.format(discord_config.ping_role)
+bot = commands.Bot(command_prefix=['.mu ','!mu '])
 
 
 # servers dictionary creation
@@ -68,13 +63,13 @@ for address in default_server_addresses:
 @bot.event
 async def on_ready():
     print('bot is ready')
-    #await default_servers_status.start()
+    await default_servers_status.start()
 
 
 # servers background check
 @tasks.loop(minutes=1)
 async def default_servers_status():
-    status_channel = bot.get_channel(channel_id)
+    status_channel = bot.get_channel(discord_config.status_channel)
 
     for server_address in default_servers_data:
         debug_prefix = '({})'.format(server_address)
@@ -181,10 +176,10 @@ async def shutdown_protocol():
 async def update(ctx):
     print('updating')
     await ctx.send("Updating the bot...")
-    #os.system('./update.sh')
+    os.system('./update.sh')
 
     await shutdown_protocol()
     sys.exit()
 
 
-bot.run(bot_token.token)
+bot.run(discord_config.bot_token)
