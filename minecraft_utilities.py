@@ -40,7 +40,7 @@ def server_embed(server_data, server_address):
     return server_stats
 
 
-# main 
+# main variables
 bot_version = '1.1.1'
 print('version:', bot_version)
 start_time = time.time()
@@ -153,8 +153,7 @@ async def info(ctx):
     latency = "Latency: **{:.2f}** ms".format(bot.latency * 1000)
     runtime = "Runtime: {}".format(time.strftime('**%H** hours **%M** minutes **%S** seconds', time.gmtime(time.time()-start_time)))
 
-    combined_info = [version, latency, runtime]
-    await ctx.send('\n'.join(combined_info))
+    await ctx.send('\n'.join([version, latency, runtime]))
 
 
 # bot owner section
