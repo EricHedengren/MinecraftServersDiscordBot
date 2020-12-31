@@ -5,6 +5,9 @@ import mcstatus
 import discord
 from discord.ext import commands, tasks
 
+import bot_token
+
+
 
 def server_embed(server_data, server_address):
     # description
@@ -184,4 +187,4 @@ async def update(ctx):
     sys.exit()
 
 
-bot.run('Nzc4NDI2NTEyMjY4NTkxMTE3.X7R0Lg.ogul_Yi1PDKVoNp4hezHdsJe9SI')
+bot.run(bot_token.token)
