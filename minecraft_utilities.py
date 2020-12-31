@@ -60,7 +60,7 @@ for address in default_server_addresses:
     default_servers_data[address] = {'server_object': mcstatus.MinecraftServer.lookup(address), 'server_status': None, 'status_message': None}
 
 
-# runs when bot is ready
+# runs on ready
 @bot.event
 async def on_ready():
     print('bot is ready')
@@ -165,7 +165,6 @@ async def update(ctx):
     await ctx.send("Updating the bot...")
     os.system('./update.sh')
 
-    print('starting shutdown protocol')
     default_servers_status.cancel()
     print('stopped servers background check')
 
