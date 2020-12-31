@@ -142,7 +142,7 @@ async def server(ctx, address):
         else:
             await ctx.send("Sorry, an unknown error occured. Please try a different server address or check back later.")
 
-            bot_owner = bot.get_user(539958171167490058)
+            bot_owner = bot.get_user(discord_config.bot_owner)
             await bot_owner.send("**Server Status Unknown Error:**\nIP address: {address}\nError: {error}\nError Type: {type}".format(address=address, error=e, type=type(e)))
 
 
