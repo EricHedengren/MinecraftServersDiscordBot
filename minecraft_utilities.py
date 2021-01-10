@@ -43,7 +43,7 @@ def server_embed(server_data, server_address):
 
 # main variables
 start_time = time.time()
-bot_version = '1.1.3'
+bot_version = '1.1.4'
 print('version:', bot_version)
 
 
@@ -163,7 +163,7 @@ async def info(ctx):
 async def update(ctx):
     print('updating')
     await ctx.send("Updating the bot...")
-    os.system('git pull')
+    #os.system('git pull')
 
     default_servers_status.cancel()
     print('stopped servers background check')
