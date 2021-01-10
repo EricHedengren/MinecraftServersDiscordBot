@@ -43,7 +43,7 @@ def server_embed(server_data, server_address):
 
 # main variables
 start_time = time.time()
-bot_version = '1.1.2'
+bot_version = '1.1.3'
 print('version:', bot_version)
 
 
@@ -152,7 +152,7 @@ async def server(ctx, address):
 async def info(ctx):
     version = "Version: **{}**".format(bot_version)
     latency = "Latency: **{:.2f}** ms".format(bot.latency * 1000)
-    runtime = "Runtime: **{:.0f}** seconds".format(time.time()-start_time)
+    runtime = "Runtime: **{}** seconds".format(int(time.time()-start_time))
 
     await ctx.send('\n'.join([version, latency, runtime]))
 
