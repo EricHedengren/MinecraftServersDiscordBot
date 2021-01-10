@@ -163,6 +163,7 @@ async def info(ctx):
 async def update(ctx):
     print('updating')
     await ctx.send("Updating the bot...")
+    os.system('git pull')
 
     default_servers_status.cancel()
     print('stopped servers background check')
