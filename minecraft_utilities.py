@@ -43,7 +43,7 @@ def server_embed(server_data, server_address):
 
 # main variables
 start_time = time.time()
-bot_version = '1.1.3'
+bot_version = '1.1.2'
 print('version:', bot_version)
 
 
