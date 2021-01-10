@@ -152,7 +152,7 @@ async def server(ctx, address):
 async def info(ctx):
     version = "Version: **{}**".format(bot_version)
     latency = "Latency: **{:.2f}** ms".format(bot.latency * 1000)
-    runtime = "Runtime: {}".format(time.strftime('**%H** hours **%M** minutes **%S** seconds', time.gmtime(time.time()-start_time)))
+    runtime = "Runtime: {:.0f} s".format(time.time()-start_time)
 
     await ctx.send('\n'.join([version, latency, runtime]))
 
