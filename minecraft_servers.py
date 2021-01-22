@@ -49,7 +49,7 @@ print('version:', bot_version)
 
 # discord initial variables
 ping_message = '<@&{}> the server is online!'.format(discord_config.ping_role)
-bot = commands.Bot(command_prefix=['.mu ','!mu '])
+bot = commands.Bot(command_prefix=['.ms ','!ms '])
 
 
 # servers dictionary creation
@@ -163,7 +163,6 @@ async def info(ctx):
 async def update(ctx):
     print('updating')
     await ctx.send("Updating the bot...")
-    #os.system('git pull')
 
     default_servers_status.cancel()
     print('stopped servers background check')
