@@ -1,10 +1,12 @@
+import discord_config
+
 import os
 import sys
 import time
+
 import mcstatus
 import discord
 from discord.ext import commands, tasks
-import discord_config
 
 
 # minecraft server status embed
@@ -41,23 +43,21 @@ def server_embed(server_data, server_address):
     return server_embed
 
 
-# main variables
+# initial variables
 start_time = time.time()
-bot_version = '1.1.3'
-print('version:', bot_version)
 
 
 # discord initial variables
 ping_message = '<@&{}> the server is online!'.format(discord_config.ping_role)
-bot = commands.Bot(command_prefix=['.ms ','!ms '])
+bot = commands.Bot(command_prefix=['.ms '])
 
 
 # servers dictionary creation
-default_server_addresses = ['136.36.192.233'] # 'xps.apmonitor.com'
+default_server_addresses = ['136.36.192.233']
 default_servers_data = {}
 
 for address in default_server_addresses:
-    default_servers_data[address] = {'server_object': mcstatus.MinecraftServer.lookup(address), 'server_status': None, 'status_message': None}
+    default_servers_data[address] = {'server_object': mcstatus.MinecraftServer(address), 'server_status': None, 'status_message': None}
 
 
 # runs on ready
@@ -122,10 +122,12 @@ async def server(ctx, address):
 
     server_object = mcstatus.MinecraftServer.lookup(address)
 
+    # online
     try:
         data = server_object.status().raw
         await ctx.send(embed=server_embed(data, address))
 
+    # offline | failed
     except Exception as e:
         # offline
         if str(e) == 'timed out':
@@ -135,7 +137,7 @@ async def server(ctx, address):
         elif str(e) == '[Errno 11001] getaddrinfo failed':
             await ctx.send("'**{}**' is an invalid server address and therefore does not exist. Please check your spelling or try a different server address.".format(address))
 
-        # did not respond
+        # no response
         elif str(e) == 'Server did not respond with any information!':
             await ctx.send("That server did not respond with any information. It could be restricted or just starting up.")
 
@@ -148,13 +150,12 @@ async def server(ctx, address):
 
 
 # combined information
-@bot.command(aliases=['i'], help="Returns the bot's version, latency, and runtime")
+@bot.command(aliases=['i'], help="Returns the bot's latency and runtime")
 async def info(ctx):
-    version = "Version: **{}**".format(bot_version)
     latency = "Latency: **{:.2f}** ms".format(bot.latency * 1000)
     runtime = "Runtime: **{}** s".format(int(time.time()-start_time))
 
-    await ctx.send('\n'.join([version, latency, runtime]))
+    await ctx.send('\n'.join([latency, runtime]))
 
 
 # update command
