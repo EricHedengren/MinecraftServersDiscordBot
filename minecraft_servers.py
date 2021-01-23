@@ -45,6 +45,7 @@ def create_server_embed(server_data, server_address):
 
 # initial variables
 start_time = time.time()
+status_channel = None
 
 
 # discord initial variables
