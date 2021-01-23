@@ -10,7 +10,7 @@ from discord.ext import commands, tasks
 
 
 # server embed
-def server_embed(server_data, server_address):
+def create_server_embed(server_data, server_address):
     # description
     full_description = ''
 
@@ -90,11 +90,11 @@ async def default_servers_status():
 
             # edit status message
             if status_message != None:
-                await status_message.edit(embed=server_embed(server_data, server_address))
+                await status_message.edit(embed=create_server_embed(server_data, server_address))
 
             # send status message
             elif status_message == None:
-                default_servers_data[server_address]['status_message'] = await status_channel.send(ping_message, embed=server_embed(server_data, server_address))
+                default_servers_data[server_address]['status_message'] = await status_channel.send(ping_message, embed=create_server_embed(server_data, server_address))
                 print(debug_prefix, 'status message sent')
 
         # offline
@@ -124,7 +124,7 @@ async def server(ctx, address):
     # online
     try:
         data = server_object.status().raw
-        await ctx.send(embed=server_embed(data, address))
+        await ctx.send(embed=create_server_embed(data, address))
 
     # offline | failed
     except Exception as e:
