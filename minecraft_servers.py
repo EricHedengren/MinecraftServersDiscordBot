@@ -1,15 +1,15 @@
-import discord_config
-
 import os
 import sys
 import time
+
+import discord_config
 
 import mcstatus
 import discord
 from discord.ext import commands, tasks
 
 
-# minecraft server status embed
+# server embed
 def server_embed(server_data, server_address):
     # description
     full_description = ''
