@@ -63,7 +63,6 @@ for address in default_server_addresses:
 # runs on ready
 @bot.event
 async def on_ready():
-    print('bot is ready')
     await default_servers_status.start()
 
 
@@ -91,7 +90,6 @@ async def default_servers_status():
             # edit status message
             if status_message != None:
                 await status_message.edit(embed=server_embed(server_data, server_address))
-                print(debug_prefix, 'status message edited')
 
             # send status message
             elif status_message == None:
@@ -149,7 +147,7 @@ async def server(ctx, address):
             await bot_owner.send("**Server Status Unknown Error:**\nIP address: {address}\nError: {error}\nError Type: {type}".format(address=address, error=e, type=type(e)))
 
 
-# combined information
+# information command
 @bot.command(aliases=['i'], help="Returns the bot's latency and runtime")
 async def info(ctx):
     latency = "Latency: **{:.2f}** ms".format(bot.latency * 1000)
@@ -162,11 +160,11 @@ async def info(ctx):
 @commands.is_owner()
 @bot.command(help="Updates the bot's code")
 async def update(ctx):
-    print('updating')
     await ctx.send("Updating the bot...")
+    print('stopping...')
 
     default_servers_status.cancel()
-    print('stopped servers background check')
+    print('stopped background check')
 
     for server_address in default_servers_data:
         status_message = default_servers_data[server_address]['status_message']
