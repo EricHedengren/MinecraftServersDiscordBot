@@ -63,14 +63,15 @@ for address in default_server_addresses:
 # runs on ready
 @bot.event
 async def on_ready():
+    global status_channel
+    status_channel = bot.get_channel(discord_config.status_channel)
+
     await default_servers_status.start()
 
 
 # servers background check
 @tasks.loop(minutes=1)
 async def default_servers_status():
-    status_channel = bot.get_channel(discord_config.status_channel)
-
     for server_address in default_servers_data:
         debug_prefix = '({})'.format(server_address)
 
@@ -161,7 +162,6 @@ async def info(ctx):
 @bot.command(help="Updates the bot's code")
 async def update(ctx):
     await ctx.send("Updating the bot...")
-    print('stopping...')
 
     default_servers_status.cancel()
     print('stopped background check')
