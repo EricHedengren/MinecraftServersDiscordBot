@@ -10,7 +10,7 @@ from discord.ext import commands, tasks
 
 
 # server embed
-def create_server_embed(server_data, server_address):
+def create_server_embed(server_data, server_address, server_name = 'Server is Online'):
     # description
     full_description = ''
 
@@ -18,7 +18,7 @@ def create_server_embed(server_data, server_address):
         full_description += list_item['text']
 
     # main embed
-    server_embed = discord.Embed(title='Server is Online', description=full_description, color=discord.Color.green())
+    server_embed = discord.Embed(title=server_name, description=full_description, color=discord.Color.green())
 
     server_embed.add_field(name='Server Address', value=server_address)
     server_embed.add_field(name='Version', value=server_data['version']['name'])
@@ -49,16 +49,16 @@ start_time = time.time()
 
 # discord initial variables
 bot = commands.Bot(command_prefix=['.ms '])
-ping_message = '<@&{}> the server is online!'.format(discord_config.ping_role)
 status_channel = None
+ping_role = '<@&{}>'.format(discord_config.ping_role)
 
 
 # servers dictionary creation
-default_server_addresses = ['136.36.192.233']
+default_server_addresses = {'136.36.192.233':"Michael's Server"}
 default_servers_data = {}
 
 for address in default_server_addresses:
-    default_servers_data[address] = {'server_object': mcstatus.MinecraftServer(address), 'server_status': None, 'status_message': None}
+    default_servers_data[address] = {'server_object': mcstatus.MinecraftServer(address), 'server_name':default_server_addresses[address], 'server_status': None, 'status_message': None}
 
 
 # runs on ready
@@ -67,13 +67,14 @@ async def on_ready():
     global status_channel
     status_channel = bot.get_channel(discord_config.status_channel)
 
-    await default_servers_status.start()
+    await default_servers_check.start()
 
 
 # servers background check
 @tasks.loop(minutes=1)
-async def default_servers_status():
+async def default_servers_check():
     for server_address in default_servers_data:
+        # initial variables
         debug_prefix = '({})'.format(server_address)
 
         server_object = default_servers_data[server_address]['server_object']
@@ -89,13 +90,16 @@ async def default_servers_status():
                 default_servers_data[server_address]['server_status'] = 'online'
                 print(debug_prefix, 'status: online')
 
+            server_name = default_servers_data[server_address]['server_name']
+
             # edit status message
             if status_message != None:
-                await status_message.edit(embed=create_server_embed(server_data, server_address))
+                await status_message.edit(embed=create_server_embed(server_data, server_address, server_name))
 
             # send status message
             elif status_message == None:
-                default_servers_data[server_address]['status_message'] = await status_channel.send(ping_message, embed=create_server_embed(server_data, server_address))
+                ping_message = '{role} {name} is online!'.format(role=ping_role, name=server_name)
+                default_servers_data[server_address]['status_message'] = await status_channel.send(ping_message, embed=create_server_embed(server_data, server_address, server_name))
                 print(debug_prefix, 'status message sent')
 
         # offline
@@ -164,7 +168,7 @@ async def info(ctx):
 async def update(ctx):
     await ctx.send("Updating the bot...")
 
-    default_servers_status.cancel()
+    default_servers_check.cancel()
     print('stopped background check')
 
     for server_address in default_servers_data:
