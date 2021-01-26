@@ -67,6 +67,9 @@ async def on_ready():
     global status_channel
     status_channel = bot.get_channel(discord_config.status_channel)
 
+    activity = discord.Activity(type=discord.ActivityType.watching, name='your servers')
+    await bot.change_presence(activity=activity)
+
     await default_servers_check.start()
 
 
