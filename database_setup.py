@@ -1,11 +1,7 @@
 import sqlite3
 
 # connection
-conn = None
-try:
-    conn = sqlite3.connect('data.db')
-except:
-    print('could not connect')
+conn = sqlite3.connect('data.db')
 
 # create tables
 discord_table = 'CREATE TABLE discord (guild_id int NOT NULL, channel_id int NOT NULL, role_id int, PRIMARY KEY (guild_id));'
