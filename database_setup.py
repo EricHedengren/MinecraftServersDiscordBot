@@ -9,10 +9,7 @@ except:
 
 # create table
 discord_table = 'CREATE TABLE discord (guild_id int PRIMARY KEY, channel_id int, role_id int);'
-address_table = '''CREATE TABLE address (guild_id int, ip_address text, server_name text, message_id int,
-FOREIGN KEY (guild_id)
-    REFERENCES discord (guild_id),
-PRIMARY KEY (guild_id,ip_address));'''
+address_table = 'CREATE TABLE address (guild int, ip_address text, server_name text, message_id int, PRIMARY KEY (guild,ip_address), FOREIGN KEY (guild) REFERENCES discord (guild_id));'
 
 tables = (discord_table, address_table)
 
