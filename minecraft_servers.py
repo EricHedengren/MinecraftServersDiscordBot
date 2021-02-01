@@ -1,6 +1,8 @@
 import os
 import sys
 import time
+#import sqlite3
+import aiosqlite
 
 import discord_config
 
@@ -43,14 +45,16 @@ def create_server_embed(server_data, server_address, server_name = 'Server is On
     return server_embed
 
 
-# initial variables
-start_time = time.time()
-
-
 # discord initial variables
 bot = commands.Bot(command_prefix=['.ms '])
-status_channel = None
-ping_role = '<@&{}>'.format(discord_config.ping_role)
+status_channel = None # remove
+ping_role = '<@&{}>'.format(discord_config.ping_role) # remove
+
+
+# database initial connection
+# conn = sqlite3.connection(data.db) # with aiosqlite
+# conn.execute("PRAGMA foreign_keys = True")
+# cur = conn.cursor()
 
 
 # servers dictionary creation
@@ -72,6 +76,9 @@ async def on_ready():
 
     await default_servers_check.start()
 
+
+# edit to take info from database with aiosqlite (server addresses, status message ids, etc)
+# remove print debug statements
 
 # servers background check
 @tasks.loop(minutes=1)
@@ -156,13 +163,32 @@ async def server(ctx, address):
             await bot_owner.send("**Server Status Unknown Error:**\nIP address: {address}\nError: {error}\nError Type: {type}".format(address=address, error=e, type=type(e)))
 
 
-# information command
-@bot.command(aliases=['i'], help="Returns the bot's latency and runtime")
-async def info(ctx):
+# latency command
+@bot.command(aliases=['l'], help="Returns the bot's latency")
+async def latency(ctx):
     latency = "Latency: **{:.2f}** ms".format(bot.latency * 1000)
-    runtime = "Runtime: **{}** s".format(int(time.time()-start_time))
+    await ctx.send(latency)
 
-    await ctx.send('\n'.join([latency, runtime]))
+# perms (server owner?)
+# guild config (add status channel/role to ping)
+@bot.command(aliases=['c'], help="")
+async def config(ctx):
+    await ctx.send(ctx.message.guild.id)
+    # ask for channel id
+    # ask for role id (optional)
+
+    # add data to discord database table with aiosqlite
+
+
+# add address
+@bot.command(aliases=['a'])
+async def add():
+    print()
+
+# remove address
+@bot.command(aliases=['r'])
+async def remove():
+    print()
 
 
 # update command
@@ -180,6 +206,8 @@ async def update(ctx):
         if status_message != None:
             await status_message.delete()
             print('({})'.format(server), 'status message deleted')
+
+    # close connection to database
 
     sys.exit()
 
