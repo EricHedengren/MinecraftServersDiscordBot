@@ -1,3 +1,5 @@
 *.db
 __pycache__
 discord_config.py
+.venv
+.vscode
