@@ -2,13 +2,13 @@ import os
 import sys
 import time
 #import sqlite3
+
 import aiosqlite
-
-import discord_config
-
 import mcstatus
 import discord
 from discord.ext import commands, tasks
+
+import discord_config
 
 
 # server embed
