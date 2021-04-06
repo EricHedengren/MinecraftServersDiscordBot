@@ -8,41 +8,8 @@ import mcstatus
 import discord
 from discord.ext import commands, tasks
 
+import server_embed
 import discord_config
-
-
-# server embed
-def create_server_embed(server_data, server_address, server_name = 'Server is Online'):
-    # description
-    full_description = ''
-
-    for list_item in server_data['description']['extra']:
-        full_description += list_item['text']
-
-    # main embed
-    server_embed = discord.Embed(title=server_name, description=full_description, color=discord.Color.green())
-
-    server_embed.add_field(name='Server Address', value=server_address)
-    server_embed.add_field(name='Version', value=server_data['version']['name'])
-
-    # number of players
-    number_online = server_data['players']['online']
-    online_max = server_data['players']['max']
-
-    server_embed.add_field(name='Number of Players Online', value=str(number_online)+'/'+str(online_max))
-
-    # player names
-    if 'sample' in server_data['players']:
-        players = []
-
-        for player in server_data['players']['sample']:
-            players.append(player['name'])
-
-        formatted_players = ', '.join(players)
-
-        server_embed.add_field(name='Players Online', value=formatted_players, inline=False)
-
-    return server_embed
 
 
 # discord initial variables
@@ -104,12 +71,12 @@ async def default_servers_check():
 
             # edit status message
             if status_message != None:
-                await status_message.edit(embed=create_server_embed(server_data, server_address, server_name))
+                await status_message.edit(embed=server_embed.create_server_embed(server_data, server_address, server_name))
 
             # send status message
             elif status_message == None:
                 ping_message = '{role} {name} is online!'.format(role=ping_role, name=server_name)
-                default_servers_data[server_address]['status_message'] = await status_channel.send(ping_message, embed=create_server_embed(server_data, server_address, server_name))
+                default_servers_data[server_address]['status_message'] = await status_channel.send(ping_message, embed=server_embed.create_server_embed(server_data, server_address, server_name))
                 print(debug_prefix, 'status message sent')
 
         # offline
@@ -139,7 +106,7 @@ async def server(ctx, address):
     # online
     try:
         data = server_object.status().raw
-        await ctx.send(embed=create_server_embed(data, address))
+        await ctx.send(embed=server_embed.create_server_embed(data, address))
 
     # offline | failed
     except Exception as e:
